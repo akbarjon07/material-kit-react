@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -22,25 +23,54 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function LoginView({ onLogin }) {
   const theme = useTheme();
 
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  const handleClick = async () => {
+
+    try {
+      const formData = {
+        email: email,
+        password: password,
+      };
+
+      const response = await axios.post('https://bodringjon.uz/api/login', formData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*"
+      }
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Login failed');
+    }
+
+    const data = response.data;
+    console.log('Login successful:', data);
+    onLogin();
+    router.push('/');
+  } catch (error) {
+    console.error('Login error:', error.message);
+  }
   };
 
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="email" label="Email address" value={email}
+          onChange={(e) => setEmail(e.target.value)}/>
 
         <TextField
           name="password"
           label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (

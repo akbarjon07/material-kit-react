@@ -15,6 +15,7 @@ src/reportWebVitals.js
 src/service-worker.js
 src/serviceWorkerRegistration.js
 src/setupTests.js
+src/sections/login/login-view.jsx
 
 src/reportWebVitals.ts
 src/service-worker.ts
